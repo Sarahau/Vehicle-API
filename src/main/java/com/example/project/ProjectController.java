@@ -26,14 +26,14 @@ public class ProjectController {
         return newVehicle;
     }
 
-    @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
-    public Vehicle getVehicle(@PathVariable("id") int id)throws IOException {
-        return
-    }
-
-    @RequestBody(value = "/updateVehicle", method = RequestMethod.PUT)
-    public Vehicle updateVehicle(@RequestBody Vehicle newVehicle)throws IOException{
-        return newVehicle;
-    }
+//    @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
+//    public Vehicle getVehicle(@PathVariable("id") int id)throws IOException {
+//        return
+//    }
+//
+//    @RequestBody(value = "/updateVehicle", method = RequestMethod.PUT)
+//    public Vehicle updateVehicle(@RequestBody Vehicle newVehicle)throws IOException{
+//        return newVehicle;
+//    }
 
 }
