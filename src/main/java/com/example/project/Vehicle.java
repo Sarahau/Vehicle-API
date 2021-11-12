@@ -144,4 +144,17 @@ public class Vehicle implements Serializable {
         System.out.println("$" + price);
         System.out.println(mpg + "MPG");
     }
+
+    /**
+     * Returns all information as string. Used for debugging.
+     */
+    public String vehicleToString(){
+        String vehicleInformation;
+        if(!this.fwd)
+            vehicleInformation = this.make + " " + this.model + "," + this.modelYear + "," + this.price;
+        else
+            vehicleInformation = this.make + " " + this.model + "," + this.modelYear + "," + this.price + "," + "TRUE";
+
+        return vehicleInformation;
+    }
 }
