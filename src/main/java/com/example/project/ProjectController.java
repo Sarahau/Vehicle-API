@@ -33,6 +33,14 @@ public class ProjectController {
      * POST method that creates a new vehicle with the provided details in the body of the API request.
      * Sample API request:
      *
+     *{
+     * 	"make": "Ford",
+     * 	"model": "Focus",
+     * 	"modelYear": 1850,
+     * 	"fwd": false,
+     * 	"price": 100,
+     * 	"mpg": 1
+     *}
      *
      * @param newVehicle
      * @return
