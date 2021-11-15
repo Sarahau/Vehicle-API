@@ -33,6 +33,14 @@ public class ProjectController {
      * POST method that creates a new vehicle with the provided details in the body of the API request.
      * Sample API request:
      *
+     *{
+     * 	"make": "Ford",
+     * 	"model": "Focus",
+     * 	"modelYear": 1850,
+     * 	"fwd": false,
+     * 	"price": 100,
+     * 	"mpg": 1
+     *}
      *
      * @param newVehicle
      * @return
@@ -40,15 +48,8 @@ public class ProjectController {
      */
     @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
     public Vehicle addVehicle(@RequestBody Vehicle newVehicle) throws IOException {
-        File file = new File(fileName);
-        FileWriter outputFile = new FileWriter(file, true);
-        outputFile.write(newVehicle.getMake() + " " + newVehicle.getModel() + "," + newVehicle.getModelYear() + "," + newVehicle.getPrice() + ",");
-        if (newVehicle.isFwd()) {
-            outputFile.write("TRUE");
-        }
-        outputFile.write("\n");
-        outputFile.close();
         vehicleStringList.add(newVehicle.vehicleToString());
+        updateData();
 
         return newVehicle;
     }
@@ -67,33 +68,31 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/updateVehicle", method = RequestMethod.PUT)
-    public Vehicle updateVehicle(@RequestBody Vehicle newVehicle)throws IOException{
-        return newVehicle;
+    @RequestMapping(value = "/updateVehicle/{id}", method = RequestMethod.PUT)
+    public Vehicle updateVehicle(@PathVariable("id") int id, @RequestBody Vehicle newVehicle)throws IOException{
+        if (id < vehicleStringList.size()) {
+            String vehicle = vehicleStringList.get(id);
+            if (vehicle.equals("")) {
+                return null; //TODO exception (vehicle was deleted)
+            }
+            vehicleStringList.set(id, newVehicle.vehicleToString());
+            updateData();
+            return newVehicle;
+        } else {
+            return null; //TODO out of bounds id
+        }
     }
 
     @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id) throws IOException{
         ResponseEntity responseEntity;
         Scanner scanner = new Scanner(new File(fileName));
-        List<String> stringList = new ArrayList<>();
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            stringList.add(line);
-        }
-
-        if (id > stringList.size()) {
+        if (id > vehicleStringList.size()) {
             responseEntity = new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         } else {
-            stringList.set(id, "");
-
-            File file = new File(fileName);
-            FileWriter outputFile = new FileWriter(file, false);
-            for (int i = 0; i < stringList.size(); i++) {
-                outputFile.write(stringList.get(i) + "\n");
-            }
-            outputFile.close();
+            vehicleStringList.set(id, "");
+            updateData();
             responseEntity = new ResponseEntity(HttpStatus.OK);
         }
         return responseEntity;
@@ -102,12 +101,23 @@ public class ProjectController {
     @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
     public List<Vehicle> getLatestVehicles() throws IOException{
         List<Vehicle> latestVehicles = new ArrayList<>();
-        int latestVehicleCounter = 0;
         // I hope this gives you a headache Sarah
-        for(int i = vehicleStringList.size()-1; i > 0 || latestVehicleCounter < 10; i--, latestVehicleCounter++){
-            latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
+        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter <= 10; i--, latestVehicleCounter++){
+            if (!vehicleStringList.get(i).equals("")) {
+                latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
+                System.out.println(vehicleStringList.get(i));
+            }
         }
         return latestVehicles;
+    }
+
+    private void updateData() throws IOException{
+        File file = new File(fileName);
+        FileWriter outputFile = new FileWriter(file, false);
+        for (int i = 0; i < vehicleStringList.size(); i++) {
+            outputFile.write(vehicleStringList.get(i) + "\n");
+        }
+        outputFile.close();
     }
 
     private Vehicle constructVehicle(String vehicleString){
