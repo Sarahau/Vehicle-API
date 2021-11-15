@@ -29,6 +29,15 @@ public class ProjectController {
         }
     }
 
+    /**
+     * POST method that creates a new vehicle with the provided details in the body of the API request.
+     * Sample API request:
+     *
+     *
+     * @param newVehicle
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
     public Vehicle addVehicle(@RequestBody Vehicle newVehicle) throws IOException {
         File file = new File(fileName);
@@ -44,6 +53,7 @@ public class ProjectController {
         return newVehicle;
     }
 
+
     @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
     public Vehicle getVehicle(@PathVariable("id") int id)throws IOException {
         if (id < vehicleStringList.size()) {
@@ -51,19 +61,7 @@ public class ProjectController {
             if (vehicle.equals("")) {
                 return null; //TODO exception (vehicle was deleted)
             }
-            Scanner scanner = new Scanner(vehicle);
-            String make = scanner.next();
-            String vehicleDetails = scanner.next();
-            String[] details = vehicleDetails.split(",");
-            // Sample Output:
-            // Ford Focus,1850,100,TRUE
-            String model = details[0];
-            int modelYear = Integer.parseInt(details[1]);
-            int price = Integer.parseInt(details[2]);
-            int mpg = 0; // not in txt file??
-            boolean fwd;
-            fwd = (details.length == 4); //fwd is the 4th detail if true, false if missing
-            return new Vehicle(make, model, modelYear, fwd, price, mpg);
+            return constructVehicle(vehicle);
         } else {
             return null; //TODO out of bounds id
         }
@@ -103,28 +101,28 @@ public class ProjectController {
 
     @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
     public List<Vehicle> getLatestVehicles() throws IOException{
-        Scanner fileScanner = new Scanner(new File(fileName));
         List<Vehicle> latestVehicles = new ArrayList<>();
-
-        while (fileScanner.hasNextLine()){
-            if(latestVehicles.size() > 10){
-                latestVehicles.remove(0);
-            }
-            String make = fileScanner.next();
-
-            String vehicleDetails = fileScanner.next();
-            String[] details = vehicleDetails.split(",");
-            // Sample Output:
-            // Ford Focus,1850,100,TRUE
-            String model = details[0];
-            int modelYear = Integer.parseInt(details[1]);
-            int price = Integer.parseInt(details[2]);
-            int mpg = 0; // not in txt file??
-            boolean fwd;
-            fwd = (details.length == 4); //fwd is the 4th detail if true, false if missing
-            Vehicle vehicleLine = new Vehicle(make, model, modelYear, fwd, price, mpg);
-            latestVehicles.add(vehicleLine);
+        int latestVehicleCounter = 0;
+        // I hope this gives you a headache Sarah
+        for(int i = vehicleStringList.size()-1; i > 0 || latestVehicleCounter < 10; i--, latestVehicleCounter++){
+            latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
         }
         return latestVehicles;
+    }
+
+    private Vehicle constructVehicle(String vehicleString){
+        Scanner scanner = new Scanner(vehicleString);
+        String make = scanner.next();
+        String vehicleDetails = scanner.next();
+        String[] details = vehicleDetails.split(",");
+        // Sample Output:
+        // Ford Focus,1850,100,TRUE
+        String model = details[0];
+        int modelYear = Integer.parseInt(details[1]);
+        int price = Integer.parseInt(details[2]);
+        int mpg = 0; // not in txt file??
+        boolean fwd;
+        fwd = (details.length == 4); //fwd is the 4th detail if true, false if missing
+        return new Vehicle(make, model, modelYear, fwd, price, mpg);
     }
 }
