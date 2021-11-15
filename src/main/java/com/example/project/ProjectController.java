@@ -31,7 +31,6 @@ public class ProjectController {
 
     @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
     public Vehicle addVehicle(@RequestBody Vehicle newVehicle) throws IOException {
-//        hello how is it going?
         File file = new File(fileName);
         FileWriter outputFile = new FileWriter(file, true);
         outputFile.write(newVehicle.getMake() + " " + newVehicle.getModel() + "," + newVehicle.getModelYear() + "," + newVehicle.getPrice() + ",");
@@ -75,9 +74,31 @@ public class ProjectController {
         return newVehicle;
     }
 
-    @RequestMapping(value = "/deleteVehicle{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id) throws IOException{
+        ResponseEntity responseEntity;
+        Scanner scanner = new Scanner(new File(fileName));
+        List<String> stringList = new ArrayList<>();
 
+        while (scanner.hasNextLine()) {
+           String line = scanner.nextLine();
+           stringList.add(line);
+       }
+
+       if (id > stringList.size()) {
+           responseEntity = new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+       } else {
+           stringList.set(id, "");
+
+           File file = new File(fileName);
+           FileWriter outputFile = new FileWriter(file, false);
+           for (int i = 0; i < stringList.size(); i++) {
+               outputFile.write(stringList.get(i) + "\n");
+           }
+           outputFile.close();
+           responseEntity = new ResponseEntity(HttpStatus.OK);
+       }
+        return responseEntity;
     }
 
     @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
@@ -106,5 +127,4 @@ public class ProjectController {
         }
         return latestVehicles;
     }
-
 }
