@@ -79,7 +79,7 @@ public class ProjectController {
     public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id) throws IOException{
 
     }
-//
+
     @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
     public List<Vehicle> getLatestVehicles() throws IOException{
         Scanner fileScanner = new Scanner(new File(fileName));
