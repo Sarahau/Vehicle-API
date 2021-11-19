@@ -1,0 +1,10 @@
+Lotus Portofino,2005,27272
+BMW Portofino,1996,21155,TRUE
+GMC Accord,2012,16159
+Dodge Wrangler,1988,24488,TRUE
+Chevrolet Beetle,1987,40062
+Nissan M3,1999,41193,TRUE
+Chevrolet M3,1995,24319,TRUE
+Honda Q50,2013,19690
+BMW Beetle,2003,32726
+Subaru Accord,2000,23322,TRUE
