@@ -1,6 +1,5 @@
 package com.example.project;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,12 @@ import java.util.Scanner;
 public class ProjectController {
     // local txt file
     String fileName;
+
     List<String> vehicleStringList;
+
+    public List<String> getVehicleStringList() {
+        return vehicleStringList;
+    }
 
     @PostConstruct
     public void initializeData() throws FileNotFoundException {
@@ -101,13 +105,17 @@ public class ProjectController {
     @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
     public List<Vehicle> getLatestVehicles() throws IOException{
         List<Vehicle> latestVehicles = new ArrayList<>();
-        // I hope this gives you a headache Sarah
-        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter <= 10; i--, latestVehicleCounter++){
+        File file = new File("./latestVehicleReport.txt");
+        FileWriter outputFile = new FileWriter(file, false);
+
+        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter < 10; i--, latestVehicleCounter++){
             if (!vehicleStringList.get(i).equals("")) {
                 latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
+                outputFile.write(vehicleStringList.get(i) + "\n");
                 System.out.println(vehicleStringList.get(i));
             }
         }
+        outputFile.close();
         return latestVehicles;
     }
 

@@ -14,7 +14,7 @@ public class MyTasks {
     String[] modelList = {"S4", "M3", "Camero", "Caliber", "Portofino", "Yukon", "Accord", "Q50", "Wrangler", "Sorento", "Evora", "P1", "GT-R", "Cayenne", "Ghost", "WRX", "Model S", "Beetle"};
     Random random = new Random();
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 4000)
     public void addVehicle() {
         String url = "http://localhost:8080/addVehicle";
         String make = makerList[random.nextInt(makerList.length)];
@@ -23,7 +23,7 @@ public class MyTasks {
         int price = random.nextInt(30000 - 1) + 15000;
         boolean fwd = (random.nextInt(100) % 2 == 0);
 
-        String newVehicle = "{\n" +
+        String newVehicleString = "{\n" +
                 "    \"make\": \"" + make + "\",\n" +
                 "    \"model\": \"" + model +
                 "    \"modelYear\": " + year + ",\n" +
@@ -32,26 +32,37 @@ public class MyTasks {
                 "    \"mpg\": 20\n" +
                 "}";
 
-        Vehicle vehicle = restTemplate.postForObject(url, newVehicle, Vehicle.class);
-        System.out.println(vehicle.vehicleToString());
-        System.out.println(newVehicle);
+        Vehicle newVehicle = new Vehicle(make, model, year, fwd, price, 20);
+        restTemplate.postForObject(url, newVehicle, Vehicle.class);
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 10000)
     public void deleteVehicle() {
-        String url = "http://localhost:8080/addVehicle";
+        String url = "http://localhost:8080/deleteVehicle/";
 
-        int id = random.nextInt(makerList.length); //TODO change to be the arraylist length I think?
-        restTemplate.delete(url, j);
+        int id = random.nextInt(100);
+        restTemplate.delete(url + id);
     }
 
-    @Scheduled()
+    @Scheduled(fixedRate = 7000)
     public void updateVehicle() {
+        String url = "http://localhost:8080/updateVehicle/";
 
+        String make = makerList[random.nextInt(makerList.length)];
+        String model = modelList[random.nextInt(modelList.length)];
+        int year = random.nextInt(30 - 1) + 1986;
+        int price = random.nextInt(30000 - 1) + 15000;
+        boolean fwd = (random.nextInt(100) % 2 == 0);
+
+        Vehicle newVehicle = new Vehicle(make.toUpperCase(), model, year, fwd, price, 20);
+        int id = random.nextInt(100);
+        restTemplate.put(url + id, newVehicle);
     }
 
-    @Scheduled(cron = "00****")
+    @Scheduled(fixedRate = 10000)
+//    @Scheduled(cron = "0 /10 * * * *") //doesn't work with cron expression
     public void latestVehicleReport() {
-
+        String url = "http://localhost:8080/getLatestVehicles";
+        restTemplate.getForObject(url, Vehicle.class);
     }
 }

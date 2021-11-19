@@ -1,6 +1,7 @@
 package com.example.project;
 
 import java.io.Serializable;
+import java.util.Scanner;
 
 /**
  * A class of vehicles, containing information such as the make, model, model year,
