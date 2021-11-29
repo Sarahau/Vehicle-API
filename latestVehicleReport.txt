@@ -1,0 +1,9 @@
+Nissan Q50,2014,27613
+Dodge Cayenne,2010,37457
+Infiniti P1,1999,37750
+Infiniti Sorento,1990,41431,TRUE
+Nissan Beetle,1989,22900
+GMC Ghost,1988,44570,TRUE
+Porsche Ghost,2000,35125,TRUE
+Ferrari Wrangler,1997,31481,TRUE
+VOLKSWAGEN Evora,1995,32882,TRUE

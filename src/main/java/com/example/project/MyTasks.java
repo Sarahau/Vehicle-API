@@ -23,15 +23,6 @@ public class MyTasks {
         int price = random.nextInt(30000 - 1) + 15000;
         boolean fwd = (random.nextInt(100) % 2 == 0);
 
-        String newVehicleString = "{\n" +
-                "    \"make\": \"" + make + "\",\n" +
-                "    \"model\": \"" + model +
-                "    \"modelYear\": " + year + ",\n" +
-                "    \"fwd\": " + fwd + ",\n" +
-                "    \"price\": " + price + ",\n" +
-                "    \"mpg\": 20\n" +
-                "}";
-
         Vehicle newVehicle = new Vehicle(make, model, year, fwd, price, 20);
         restTemplate.postForObject(url, newVehicle, Vehicle.class);
     }
@@ -59,8 +50,8 @@ public class MyTasks {
         restTemplate.put(url + id, newVehicle);
     }
 
-    @Scheduled(fixedRate = 10000)
-//    @Scheduled(cron = "0 /10 * * * *") //doesn't work with cron expression
+//    @Scheduled(fixedRate = 10000)
+    @Scheduled(cron = "0/8 * * ? * *") //doesn't work with cron expression
     public void latestVehicleReport() {
         String url = "http://localhost:8080/getLatestVehicles";
         restTemplate.getForObject(url, Vehicle.class);
