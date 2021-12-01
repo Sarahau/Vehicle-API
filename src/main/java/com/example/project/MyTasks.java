@@ -48,9 +48,16 @@ public class MyTasks {
         Vehicle newVehicle = new Vehicle(make.toUpperCase(), model, year, fwd, price, 20);
         int id = random.nextInt(100);
         restTemplate.put(url + id, newVehicle);
+
+        // to check the vehicle was updated
+        String urlGet = "http://localhost:8080/getVehicle/";
+        Vehicle checkVehicle = restTemplate.getForObject(urlGet + id, Vehicle.class);
+        assert checkVehicle != null;
+        if (!checkVehicle.vehicleToString().equals(newVehicle.vehicleToString())) {
+            System.out.println("error");
+        }
     }
 
-//    @Scheduled(fixedRate = 10000)
     @Scheduled(cron = "0/8 * * ? * *") //doesn't work with cron expression
     public void latestVehicleReport() {
         String url = "http://localhost:8080/getLatestVehicles";
